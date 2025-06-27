@@ -4,7 +4,7 @@ kind: ServiceMonitor
 metadata:
   name: {{ .Release.Name }}-file-explorer-sm
   labels:
-    # This label is important! The default prometheus instance looks for this.
+    
     release: prometheus
 spec:
   selector:

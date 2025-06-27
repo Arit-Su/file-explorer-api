@@ -1,37 +1,37 @@
-# -- Number of pods to run
+
 replicaCount: 1
 
 image:
-  # -- The Docker image to use. For Minikube, this will be a local image.
+ 
   repository: file-explorer-api
   tag: "local"
-  # -- Use 'Never' for Minikube local images, 'IfNotPresent' or 'Always' for remote registries
+  
   pullPolicy: Never
 
-# -- Application configuration passed as environment variables
+
 config:
-  # -- Backend type. Can be 'local' or 's3'
+ 
   backendType: "local"
   
   local:
-    # -- The path inside the container where the local storage volume is mounted
+    
     storageRootPath: "/data"
   
   s3:
-    # -- The name of the S3/MinIO bucket to browse
+    
     bucketName: "file-explorer"
-    # -- The internal Kubernetes service URL for MinIO
+    
     endpointUrl: "http://minio.default.svc.cluster.local:9000"
-    # -- The K8s secret containing MinIO credentials
+    
     credentialsSecret:
       name: "minio-credentials"
       accessKeyIdKey: "accessKey"
       secretAccessKeyKey: "secretKey"
 
-# -- Configuration for the 'local' backend's persistent storage
+
 persistence:
   enabled: false
-  # -- For Minikube, we use hostPath to mount a directory from the Minikube VM
+ 
   hostPath:
     path: /data/my-files
     type: DirectoryOrCreate
@@ -40,6 +40,6 @@ service:
   type: ClusterIP
   port: 80
 
-# -- Creates a ServiceMonitor resource for the Prometheus Operator
+
 monitoring:
   enabled: true

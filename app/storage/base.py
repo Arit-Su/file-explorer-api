@@ -6,7 +6,7 @@ class Item(BaseModel):
     """Represents a file or a folder."""
     name: str
     path: str
-    type: str  # 'file' or 'folder'
+    type: str  
 
 class StorageBackend(ABC):
     """Abstract Base Class for all storage backends."""

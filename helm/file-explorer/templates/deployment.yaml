@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: file-explorer # Important for Service and ServiceMonitor
+        app: file-explorer 
         release: {{ .Release.Name }}
     spec:
       containers:

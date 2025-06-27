@@ -13,7 +13,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Exposes a /metrics endpoint for Prometheus
+
 Instrumentator().instrument(app).expose(app)
 
 def get_storage_backend() -> StorageBackend:

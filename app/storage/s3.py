@@ -17,35 +17,34 @@ class S3StorageBackend(StorageBackend):
 
     def list(self, path: str) -> List[Item]:
         path = path.strip('/')
-        # The S3 API needs a trailing slash on the prefix to list a "directory"
+       
         if path:
             path += '/'
         
         paginator = self.s3_client.get_paginator('list_objects_v2')
-        # This returns an ITERATOR, not a single response dict
+       
         page_iterator = paginator.paginate(Bucket=self.bucket_name, Prefix=path, Delimiter='/')
         
         items = []
 
-        # --- THE FIX IS HERE ---
-        # We must loop through each page from the iterator
+        
         for page in page_iterator:
-            # 'CommonPrefixes' contains the sub-folders for this page
+            
             if page.get('CommonPrefixes'):
                 for prefix in page.get('CommonPrefixes'):
                     if prefix:
                         full_prefix = prefix.get('Prefix')
-                        # Get just the folder name, not the full path
+                        
                         folder_name = full_prefix.replace(path, '', 1).strip('/')
                         items.append(Item(name=folder_name, path=full_prefix.strip('/'), type='folder'))
             
-            # 'Contents' contains the files in the current folder for this page
+            
             if page.get('Contents'):
                 for obj in page.get('Contents'):
-                    if obj and not obj.get('Key').endswith('/'): # Ignore the folder object itself
+                    if obj and not obj.get('Key').endswith('/'): 
                         key = obj.get('Key')
                         file_name = key.replace(path, '', 1)
-                        if file_name: # Only add if it's not the folder placeholder itself
+                        if file_name: 
                             items.append(Item(name=file_name, path=key, type='file'))
 
         return sorted(items, key=lambda x: (x.type, x.name))
