@@ -17,7 +17,7 @@ A FastAPI-based file explorer that supports browsing both local file systems and
 ---
 
 ## Project Structure
-
+<pre> <code>
 .
 ├── app/
 │ ├── main.py
@@ -26,7 +26,7 @@ A FastAPI-based file explorer that supports browsing both local file systems and
 ├── Dockerfile
 ├── values.yaml # Helm values
 └── README.md
-
+<pre> <code>
 yaml
 Copy
 Edit
