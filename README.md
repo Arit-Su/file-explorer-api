@@ -26,10 +26,6 @@ A FastAPI-based file explorer that supports browsing both local file systems and
 ├── Dockerfile
 ├── values.yaml # Helm values
 └── README.md
-<pre> <code>
-yaml
-Copy
-Edit
 
 ---
 
@@ -41,39 +37,28 @@ Edit
 eval $(minikube docker-env)
 docker build -t file-explorer-api:local .
 2. Deploy with Helm
-Local Backend:
-bash
-Copy
-Edit
+Local Backend
 helm install file-api ./helm/file-explorer/ \
   --set config.backendType=local \
   --set persistence.enabled=true
 S3/MinIO Backend:
-bash
-Copy
-Edit
+
 helm upgrade file-api ./helm/file-explorer/ \
   --set config.backendType=s3 \
   --set persistence.enabled=false
 Access the App
 Port Forward
-bash
-Copy
-Edit
+
 kubectl port-forward svc/file-api-file-explorer-svc 8080:80
 Then open: http://localhost:8080
 
 Monitoring with Grafana
 Enable Monitoring
-bash
-Copy
-Edit
+
 helm upgrade file-api ./helm/file-explorer/ \
   --set monitoring.enabled=true
 Access Grafana
-bash
-Copy
-Edit
+
 kubectl get secret -n monitoring prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
 Go to http://localhost:3000
