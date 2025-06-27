@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: file-explorer
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: file-explorer # Important for Service and ServiceMonitor
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: file-explorer-api
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: BACKEND_TYPE
+              value: {{ .Values.config.backendType | quote }}
+            - name: LOCAL_STORAGE_ROOT_PATH
+              value: {{ .Values.config.local.storageRootPath | quote }}
+            - name: S3_BUCKET_NAME
+              value: {{ .Values.config.s3.bucketName | quote }}
+            - name: S3_ENDPOINT_URL
+              value: {{ .Values.config.s3.endpointUrl | quote }}
+          {{- if eq .Values.config.backendType "s3" }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.s3.credentialsSecret.name }}
+                  key: {{ .Values.config.s3.credentialsSecret.accessKeyIdKey }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.s3.credentialsSecret.name }}
+                  key: {{ .Values.config.s3.credentialsSecret.secretAccessKeyKey }}
+          {{- end }}
+          {{- if and .Values.persistence.enabled (eq .Values.config.backendType "local") }}
+          volumeMounts:
+            - name: data-volume
+              mountPath: {{ .Values.config.local.storageRootPath }}
+          {{- end }}
+      {{- if and .Values.persistence.enabled (eq .Values.config.backendType "local") }}
+      volumes:
+        - name: data-volume
+          hostPath:
+            path: {{ .Values.persistence.hostPath.path }}
+            type: {{ .Values.persistence.hostPath.type }}
+      {{- end }}
