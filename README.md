@@ -33,7 +33,7 @@ A FastAPI-based file explorer that supports browsing both local file systems and
 
 1. Build Docker Image (for Minikube)
 
-```bash
+
 eval $(minikube docker-env)
 docker build -t file-explorer-api:local .
 2. Deploy with Helm
@@ -78,4 +78,4 @@ GET	/cloud-folder	List contents of a folder
 Metrics
 Available at: /metrics
 
-Collected by Prometheus if monitoring is enabled
+Collected by Prometheus 
